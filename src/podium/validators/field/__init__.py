@@ -6,16 +6,11 @@ from podium.validators.field.field import (
     nan_values,
     null_values,
     unique_values,
-)
-
-from podium.validators.field._predicates import (
-    is_between,
-    is_duplicate,
-    is_finite,
-    is_in,
-    is_nan,
-    is_null,
-    is_unique,
+    matches_pattern,
+    matches_prefix,
+    matches_suffix,
+    min_length,
+    max_length,
 )
 
 __all__ = [
@@ -26,11 +21,9 @@ __all__ = [
     "nan_values",
     "null_values",
     "unique_values",
-    "is_between",
-    "is_duplicate",
-    "is_finite",
-    "is_in",
-    "is_nan",
-    "is_null",
-    "is_unique",
+    "matches_pattern",
+    "matches_prefix",
+    "matches_suffix",
+    "min_length",
+    "max_length"
 ]
