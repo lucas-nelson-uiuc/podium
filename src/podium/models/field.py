@@ -1,7 +1,6 @@
 from typing import Any, Callable, Optional
 
 import functools
-import operator
 
 import narwhals as nw
 from narwhals.typing import IntoExpr
@@ -48,31 +47,8 @@ class Field:
             lambda expr, func: expr.pipe(func), self.converter, column
         )
 
-    def _apply_validator(self, column: IntoExpr) -> IntoExpr:
-        """Assert validator(s) are true for all values in column."""
-        if isinstance(self.validator, Callable):
-            return self.validator(column)
-        return functools.reduce(
-            operator.and_, map(lambda func: func(column), self.validator)
-        )
-
-    def validate(self) -> IntoExpr:
-        column = nw.col(self.alias)
-        validator_expr = self._apply_validator(column)
-        return operator.inv(validator_expr)
-
     def convert(self, column_exists: Optional[bool] = True) -> IntoExpr:
-        """
-        Construct expression using field definition.
-
-        The following steps are followed to create a column:
-            - if the column does not exists, assign the default value
-            - if the column exists, instantiate a narwhals column:
-                - cast the associated dtype
-                - if the default value is a function, pass the column
-                - if the default value is a scalar, replace nulls
-            - TBC...
-        """
+        """Construct expression using field definition."""
 
         if column_exists:
             column = nw.col(self.name)
@@ -92,3 +68,16 @@ class Field:
             column = self._apply_converter(column)
 
         return column.alias(self.alias)
+
+    # def _apply_validator(self, column: IntoExpr) -> IntoExpr:
+    #     """Assert validator(s) are true for all values in column."""
+    #     if isinstance(self.validator, Callable):
+    #         return self.validator(column)
+    #     return functools.reduce(
+    #         operator.and_, map(lambda func: func(column), self.validator)
+    #     )
+
+    # def validate(self) -> IntoExpr:
+    #     column = nw.col(self.alias)
+    #     validator_expr = self._apply_validator(column)
+    #     return operator.inv(validator_expr)

@@ -11,9 +11,7 @@ from podium.models.field import Field
 class Model:
     @classmethod
     def fields(cls, criteria: Callable = None) -> Sequence[Field]:
-        fields = [
-            getattr(cls, model_field) for model_field in cls.__dataclass_fields__
-        ]
+        fields = [getattr(cls, model_field) for model_field in cls.__dataclass_fields__]
         if criteria is None:
             return fields
         return list(filter(criteria, fields))

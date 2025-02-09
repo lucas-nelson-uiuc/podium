@@ -97,7 +97,7 @@ class DataFrameValidator(Validator):
             description=self.description,
             validator=self.validator(*args, **kwargs),
         )
-        
+
 
 @dataclass
 class RelationshipValidator(DataFrameValidator):

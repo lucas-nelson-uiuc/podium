@@ -56,3 +56,48 @@ def is_null(column: IntoExpr) -> IntoExpr:
 def is_unique(column: IntoExpr) -> IntoExpr:
     """Check that column contains no duplicated values."""
     return _as_expr(column).is_unique()
+
+
+def ends_with(suffix: str) -> IntoExpr:
+    """Check that column ends with suffix."""
+
+    def _ends_with(column: IntoExpr) -> IntoExpr:
+        return _as_expr(column).str.ends_with(suffix=suffix)
+
+    return _ends_with
+
+
+def starts_with(prefix: str) -> IntoExpr:
+    """Check that column starts with prefix."""
+
+    def _starts_with(column: IntoExpr) -> IntoExpr:
+        return _as_expr(column).str.strats_with(prefix=prefix)
+
+    return _starts_with
+
+
+def matches_pattern(pattern: str, literal: bool = False) -> IntoExpr:
+    """Check that column contains pattern provided."""
+
+    def _matches_pattern(column: IntoExpr) -> IntoExpr:
+        return _as_expr(column).str.contains(pattern, literal=literal)
+
+    return _matches_pattern
+
+
+def min_length(length: int) -> IntoExpr:
+    """Check that column does is no shorter than length."""
+
+    def _min_length(column: IntoExpr) -> IntoExpr:
+        return _as_expr(column).str.len_chars() >= length
+
+    return _min_length
+
+
+def max_length(length: int) -> IntoExpr:
+    """Check that column does is no longer than length."""
+
+    def _max_length(column: IntoExpr) -> IntoExpr:
+        return _as_expr(column).str.len_chars() < -length
+
+    return _max_length
