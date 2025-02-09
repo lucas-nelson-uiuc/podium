@@ -10,25 +10,27 @@ from narwhals.typing import IntoExpr
 class Field:
     def __init__(
         self,
-        name: str = None,
+        name: str,
+        dtype: Any,
         alias: str = None,
-        dtype: Any = None,
+        description: str = None,
         default: Any = None,
         factory: Callable[[Any], Any] = None,
         converter: Callable[[Any], Any] = None,
         validator: Callable[[Any], Any] = None,
-        metadata: dict[str, Any] = None,
+        # metadata: dict[str, Any] = None,
     ):
         if (default is not None) and (factory is not None):
             raise ValueError("Cannot pass default and factory.")
 
         self.name = name
-        self.alias = alias or name
         self.dtype = dtype
+        self.alias = alias or name
+        self.description = description
         self.default = default or factory
         self.converter = converter
         self.validator = validator
-        self.metadata = metadata
+        # self.metadata = metadata
 
     def __repr__(self) -> str:
         return f"PodiumField(name={self.name}, dtype={self.dtype})"
