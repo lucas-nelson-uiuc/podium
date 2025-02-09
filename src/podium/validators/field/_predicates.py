@@ -1,14 +1,8 @@
 from typing import Any, Literal, Callable
 
-import narwhals as nw
 from narwhals.typing import IntoExpr
 
-
-def _as_expr(column: str | nw.Expr) -> IntoExpr:
-    """Coerce column-like object to expression."""
-    if not isinstance(column, nw.Expr):
-        column = nw.col(column)
-    return column
+from podium.utils import _as_expr
 
 
 def is_between(
@@ -71,7 +65,7 @@ def starts_with(prefix: str) -> IntoExpr:
     """Check that column starts with prefix."""
 
     def _starts_with(column: IntoExpr) -> IntoExpr:
-        return _as_expr(column).str.strats_with(prefix=prefix)
+        return _as_expr(column).str.starts_with(prefix=prefix)
 
     return _starts_with
 

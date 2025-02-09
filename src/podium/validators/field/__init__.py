@@ -25,5 +25,5 @@ __all__ = [
     "matches_prefix",
     "matches_suffix",
     "min_length",
-    "max_length"
+    "max_length",
 ]

@@ -54,23 +54,23 @@ matches_pattern = FieldValidator(
 matches_suffix = FieldValidator(
     name="Matches Suffix",
     description=_predicates.ends_with.__doc__,
-    validator=_predicates.ends_with
+    validator=_predicates.ends_with,
 )
 
 matches_prefix = FieldValidator(
     name="Matches Prefix",
     description=_predicates.starts_with.__doc__,
-    validator=_predicates.starts_with
+    validator=_predicates.starts_with,
 )
 
 min_length = FieldValidator(
     name="Minimum Length",
     description=_predicates.min_length.__doc__,
-    validator=_predicates.min_length
+    validator=_predicates.min_length,
 )
 
 max_length = FieldValidator(
     name="Maximum Length",
     description=_predicates.max_length.__doc__,
-    validator=_predicates.max_length
+    validator=_predicates.max_length,
 )
