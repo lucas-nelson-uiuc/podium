@@ -97,7 +97,7 @@ class DataFrameValidator(Validator):
             description=self.description,
             validator=self.validator(*args, **kwargs),
         )
-
+        
 
 @dataclass
 class RelationshipValidator(DataFrameValidator):
@@ -109,4 +109,8 @@ class RelationshipValidator(DataFrameValidator):
 
 @dataclass
 class SchemaValidator(Validator):
-    pass
+    def __validate__(self, schema: DataFrameT) -> DataFrameT:
+        return self.validator(schema)
+
+    def __is_valid__(self, schema: DataFrameT) -> DataFrameT:
+        return schema.len() > 1
