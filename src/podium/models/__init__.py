@@ -1,7 +1,7 @@
 from podium.models.field import Field
-from podium.models.schema import Schema
+from podium.models.schema import Model
 
 __all__ = [
     "Field",
-    "Schema",
+    "Model",
 ]

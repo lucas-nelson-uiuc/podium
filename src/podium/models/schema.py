@@ -2,18 +2,17 @@ from typing import Sequence, Callable
 
 from dataclasses import dataclass
 
-import narwhals as nw
 from narwhals.typing import DataFrameT
 
-from podium.models.field.field import Field
+from podium.models.field import Field
 
 
 @dataclass
-class Schema:
+class Model:
     @classmethod
     def fields(cls, criteria: Callable = None) -> Sequence[Field]:
         fields = [
-            getattr(cls, schema_field) for schema_field in cls.__dataclass_fields__
+            getattr(cls, model_field) for model_field in cls.__dataclass_fields__
         ]
         if criteria is None:
             return fields
