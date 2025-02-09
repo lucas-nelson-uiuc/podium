@@ -3,11 +3,11 @@ from podium.validators._classes import (
     DataFrameValidator,
     SchemaValidator,
 )
-from podium.validators import _predicates as predicates
+from podium.validators import field as field
 
 
 __all__ = [
-    "predicates",
+    "field",
     "FieldValidator",
     "DataFrameValidator",
     "SchemaValidator",

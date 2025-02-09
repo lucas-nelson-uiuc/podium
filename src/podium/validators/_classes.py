@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Self
+from typing import Callable, Optional
 
 from dataclasses import dataclass
 
@@ -6,7 +6,7 @@ import functools
 import operator
 
 import narwhals as nw
-from narwhals.typing import DataFrameT, IntoExpr
+from narwhals.typing import DataFrameT, IntoExpr, IntoDataFrame
 
 
 @dataclass
@@ -15,19 +15,24 @@ class Validator:
     description: str
     validator: Callable
 
-    def __validate__(self, data: DataFrameT) -> None:
-        return self.validator(data)
+    def __validate__(self, data: DataFrameT) -> IntoDataFrame:
+        raise NotImplementedError("Method not yet implemented.")
+
+    def __is_valid__(self, data: DataFrameT) -> bool:
+        raise NotImplementedError("Method not yet implemented.")
 
     def validate(self, data: DataFrameT) -> None:
         invalid_obs = self.__validate__(data)
         try:
-            assert invalid_obs.is_empty()
+            assert self.__is_valid__(invalid_obs)
             log_level = "success"
             log_msg = "All column(s) passed the validation."
         except AssertionError:
             log_level = "failure"
             log_msg = "At least one column failed the validation."
             print(invalid_obs)
+        except Exception as e:
+            raise e
         finally:
             print(f"{self.name} | {log_level}: {log_msg}")
 
@@ -35,6 +40,12 @@ class Validator:
 @dataclass
 class FieldValidator(Validator):
     """Base class for field validator."""
+
+    def __validate__(self, data: DataFrameT) -> None:
+        return nw.from_native(data).filter(self.validator)
+
+    def __is_valid__(self, data: DataFrameT) -> bool:
+        return data.is_empty()
 
     def _construct_validator(
         self, *column: str, strict: bool, invert: bool
@@ -68,13 +79,32 @@ class FieldValidator(Validator):
             ),
         )
 
-    def __validate__(self, data: DataFrameT) -> None:
-        return nw.from_native(data).filter(self.validator).to_native()
-
 
 @dataclass
 class DataFrameValidator(Validator):
-    pass
+    """Base class for DataFrame validator."""
+
+    def __validate__(self, data: DataFrameT) -> DataFrameT:
+        return self.validator(nw.from_native(data))
+
+    def __is_valid__(self, data: DataFrameT) -> bool:
+        return not data.any()
+
+    def bind(self, *args: tuple, **kwargs: dict) -> "DataFrameValidator":
+        """Partially define validator with arguments."""
+        return DataFrameValidator(
+            name=self.name,
+            description=self.description,
+            validator=self.validator(*args, **kwargs),
+        )
+
+
+@dataclass
+class RelationshipValidator(DataFrameValidator):
+    """Base class for DataFrame Relationship validator."""
+
+    def __is_valid__(self, data: DataFrameT) -> bool:
+        return data.is_empty()
 
 
 @dataclass
