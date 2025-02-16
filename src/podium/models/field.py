@@ -1,5 +1,4 @@
 from typing import Any, Callable, Optional, Sequence
-
 import functools
 
 import narwhals as nw
@@ -54,6 +53,11 @@ class Field:
         """Cast column to target data type."""
         assert issubclass(self.dtype, nw.dtypes.DType)
         return column.cast(self.dtype)
+
+    def document(self, attributes: Sequence[str] = None) -> dict:
+        if attributes is None:
+            attributes = ("name", "dtype", "description", "default")
+        return {attr: getattr(self, attr, None) for attr in attributes}
 
     def convert(self, column_exists: Optional[bool] = True) -> IntoExpr:
         """Construct expression using field definition."""

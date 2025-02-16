@@ -17,6 +17,16 @@ class Model:
         return list(filter(criteria, fields))
 
     @classmethod
+    def document(
+        cls, attributes: Sequence[str] = None, criteria: Callable = None
+    ) -> Sequence[dict]:
+        """"""
+        return [
+            field.document(attributes=attributes)
+            for field in cls.fields(criteria=criteria)
+        ]
+
+    @classmethod
     def __preprocess__(cls, data: DataFrameT) -> DataFrameT:
         return data
 
