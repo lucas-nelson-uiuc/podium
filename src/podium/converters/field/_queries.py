@@ -1,6 +1,4 @@
-from typing import Any, Literal, Callable
 
-import narwhals as nw
 from narwhals.typing import IntoExpr
 
 from podium.utils import _as_expr

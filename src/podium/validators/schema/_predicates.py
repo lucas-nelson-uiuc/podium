@@ -1,4 +1,3 @@
-from typing import Any, Literal, Callable
 
 import narwhals as nw
 
