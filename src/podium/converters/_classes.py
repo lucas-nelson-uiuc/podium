@@ -18,6 +18,9 @@ class Converter:
 
     def __convert__(self):
         raise NotImplementedError("Method not yet implemented.")
+    
+    def convert(self, data: nw.DataFrame) -> nw.DataFrame:
+        return self.__convert__(data)
 
 
 @dataclass
