@@ -11,7 +11,6 @@ def apply_converter(
     column: IntoExpr, converter: Callable | Sequence[Callable]
 ) -> IntoExpr:
     """Transform column according to defined converter(s)."""
-
     if isinstance(converter, FieldConverter):
         return converter.convert(column)
     if isinstance(converter, Callable):
@@ -22,6 +21,8 @@ def apply_converter(
 
 
 class Field:
+    """Podium field class."""
+
     def __init__(
         self,
         name: str,
@@ -47,6 +48,7 @@ class Field:
         # self.metadata = metadata
 
     def __repr__(self) -> str:
+        """Represent attributes of Podium Field."""
         return f"PodiumField(name={self.name}, dtype={self.dtype})"
 
     def _cast_dtype(self, column: IntoExpr) -> IntoExpr:
@@ -55,13 +57,13 @@ class Field:
         return column.cast(self.dtype)
 
     def document(self, attributes: Sequence[str] = None) -> dict:
+        """Return JSON-like object describing Field."""
         if attributes is None:
             attributes = ("name", "dtype", "description", "default")
         return {attr: getattr(self, attr, None) for attr in attributes}
 
     def convert(self, column_exists: Optional[bool] = True) -> IntoExpr:
         """Construct expression using field definition."""
-
         if column_exists:
             column = nw.col(self.name)
         else:

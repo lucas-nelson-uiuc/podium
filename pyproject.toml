@@ -17,7 +17,7 @@ build-backend = "hatchling.build"
 
 [tool.ruff.lint]
 select = ["D"]
-ignore = ["D417"]
+ignore = ["D100", "D104"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

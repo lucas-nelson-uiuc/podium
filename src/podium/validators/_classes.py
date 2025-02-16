@@ -11,6 +11,8 @@ from narwhals.typing import DataFrameT, IntoExpr, IntoDataFrame
 
 @dataclass(kw_only=True)
 class Validator:
+    """Base class for validator constructor."""
+
     name: str
     description: str = field(default=None)
     validator: Callable
@@ -60,7 +62,7 @@ class FieldValidator(Validator):
         return operator.inv(query) if invert else query
 
     def bind(self, *args: tuple, **kwargs: dict) -> "FieldValidator":
-        """Partially define validator with arguments."""
+        """Define validator with arguments."""
         return FieldValidator(
             name=self.name,
             description=self.description,
@@ -95,7 +97,7 @@ class DataFrameValidator(Validator):
         return not data.any()
 
     def bind(self, *args: tuple, **kwargs: dict) -> "DataFrameValidator":
-        """Partially define validator with arguments."""
+        """Define validator with arguments."""
         return DataFrameValidator(
             name=self.name,
             description=self.description,
