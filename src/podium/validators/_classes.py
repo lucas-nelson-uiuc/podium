@@ -1,6 +1,6 @@
 from typing import Callable, Optional
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import functools
 import operator
@@ -9,10 +9,10 @@ import narwhals as nw
 from narwhals.typing import DataFrameT, IntoExpr, IntoDataFrame
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Validator:
     name: str
-    description: str
+    description: str = field(default=None)
     validator: Callable
 
     def __post_init__(self):

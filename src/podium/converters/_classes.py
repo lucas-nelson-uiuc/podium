@@ -1,15 +1,15 @@
 from typing import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import narwhals as nw
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Converter:
     """Base converter class."""
 
     name: str
-    description: str
+    description: str = field(default=None)
     converter: Callable
 
     def __post_init__(self):
