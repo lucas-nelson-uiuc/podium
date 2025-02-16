@@ -12,6 +12,10 @@ class Converter:
     description: str
     converter: Callable
 
+    def __post_init__(self):
+        if self.description is None:
+            self.description = self.converter.__doc__ or "Missing description"
+
     def __convert__(self):
         raise NotImplementedError("Method not yet implemented.")
 
@@ -28,9 +32,15 @@ class FieldConverter(Converter):
             converter=self.converter(*args, **kwargs),
         )
 
-    # def construct(self, column: str) -> "FieldConverter": # TODO: allow multiple columns?
-    #     return FieldConverter(
-    #         name=self.name,
-    #         description=self.description,
-    #         converter=self.converter(column)
-    #     )
+
+@dataclass
+class DataFrameConverter(Converter):
+    def __convert__(self, data: nw.DataFrame) -> nw.DataFrame:
+        return self.converter(data)
+
+    def bind(self, *args: tuple, **kwargs: dict) -> "DataFrameConverter":
+        return DataFrameConverter(
+            name=self.name,
+            description=self.description,
+            converter=self.converter(*args, **kwargs),
+        )
