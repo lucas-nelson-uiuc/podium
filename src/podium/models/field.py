@@ -1,9 +1,25 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Sequence
 
 import functools
 
 import narwhals as nw
 from narwhals.typing import IntoExpr
+
+from podium.converters import FieldConverter
+
+
+def apply_converter(
+    column: IntoExpr, converter: Callable | Sequence[Callable]
+) -> IntoExpr:
+    """Transform column according to defined converter(s)."""
+
+    if isinstance(converter, FieldConverter):
+        return converter.convert(column)
+    if isinstance(converter, Callable):
+        return converter(column)
+    return functools.reduce(
+        lambda expr, func: apply_converter(expr, func), converter, column
+    )
 
 
 class Field:
@@ -39,14 +55,6 @@ class Field:
         assert issubclass(self.dtype, nw.dtypes.DType)
         return column.cast(self.dtype)
 
-    def _apply_converter(self, column: IntoExpr) -> IntoExpr:
-        """Transform column according to defined converter(s)."""
-        if isinstance(self.converter, Callable):
-            return self.converter(column)
-        return functools.reduce(
-            lambda expr, func: expr.pipe(func), self.converter, column
-        )
-
     def convert(self, column_exists: Optional[bool] = True) -> IntoExpr:
         """Construct expression using field definition."""
 
@@ -65,7 +73,7 @@ class Field:
                 column = column.fill_null(value=self.default)
 
         if self.converter:
-            column = self._apply_converter(column)
+            column = apply_converter(column=column, converter=self.converter)
 
         return column.alias(self.alias)
 
