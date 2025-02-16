@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from narwhals.typing import DataFrameT
 
-from podium.models.field import Field
+from podium.model.field import Field
 
 
 @dataclass

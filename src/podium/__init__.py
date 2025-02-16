@@ -1,3 +1,3 @@
-from podium.models import Field, Model
+from podium.model import Field, Model
 
 __all__ = ["Field", "Model"]
