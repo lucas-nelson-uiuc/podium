@@ -9,12 +9,12 @@ replace = FieldConverter(
 
 replace_all = FieldConverter(
     name="Replace All Values",
-    validator=_queries.replace_all,
+    converter=_queries.replace_all,
 )
 
 to_datetime = FieldConverter(
     name="Cast Datetime",
-    validator=_queries.to_datetime,
+    converter=_queries.to_datetime,
 )
 
 to_lowercase = FieldConverter(
@@ -24,5 +24,5 @@ to_lowercase = FieldConverter(
 
 to_upppercase = FieldConverter(
     name="Convert to Uppercase",
-    validator=_queries.to_uppercase,
+    converter=_queries.to_uppercase,
 )
