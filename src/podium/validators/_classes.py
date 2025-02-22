@@ -31,12 +31,11 @@ class Validator:
     def describe(self) -> str:
         return self.description
 
-    @classmethod
-    def bind(cls, *args, **kwargs) -> "Validator":
-        return cls(
-            name=cls.name,
-            description=string.Template(cls.description).safe_substitute(kwargs),
-            validator=cls.validator(*args, **kwargs),
+    def bind(self, *args, **kwargs) -> "Validator":
+        return self.__class__(
+            name=self.name,
+            description=string.Template(self.description).safe_substitute(kwargs),
+            validator=self.validator(*args, **kwargs),
         )
 
     def validate(self, data: DataFrameT) -> None:
