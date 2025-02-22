@@ -20,7 +20,7 @@ class Validator:
 
     def __post_init__(self):
         if self.description is None:
-            self.description = self.validate.__doc__ or "Missing description"
+            self.description = self.validator.__doc__ or "Missing description"
 
     def __validate__(self, data: DataFrameT) -> IntoDataFrame:
         raise NotImplementedError("Method not yet implemented.")
