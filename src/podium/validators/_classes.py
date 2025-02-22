@@ -2,6 +2,7 @@ from typing import Callable, Optional
 
 from dataclasses import dataclass, field
 
+import string
 import functools
 import operator
 
@@ -26,6 +27,17 @@ class Validator:
 
     def __is_valid__(self, data: DataFrameT) -> bool:
         raise NotImplementedError("Method not yet implemented.")
+
+    def describe(self) -> str:
+        return self.description
+
+    @classmethod
+    def bind(cls, *args, **kwargs) -> "Validator":
+        return cls(
+            name=cls.name,
+            description=string.Template(cls.description).safe_substitute(kwargs),
+            validator=cls.validator(*args, **kwargs),
+        )
 
     def validate(self, data: DataFrameT) -> None:
         invalid_obs = self.__validate__(data)
@@ -61,13 +73,13 @@ class FieldValidator(Validator):
         query = functools.reduce(compare_op, map(self.validator, column))
         return operator.inv(query) if invert else query
 
-    def bind(self, *args: tuple, **kwargs: dict) -> "FieldValidator":
-        """Define validator with arguments."""
-        return FieldValidator(
-            name=self.name,
-            description=self.description,
-            validator=self.validator(*args, **kwargs),
-        )
+    # def bind(self, *args: tuple, **kwargs: dict) -> "FieldValidator":
+    #     """Define validator with arguments."""
+    #     return FieldValidator(
+    #         name=self.name,
+    #         description=string.Template(self.description).safe_substitute(kwargs),
+    #         validator=self.validator(*args, **kwargs),
+    #     )
 
     def construct(
         self,
@@ -96,13 +108,13 @@ class DataFrameValidator(Validator):
     def __is_valid__(self, data: DataFrameT) -> bool:
         return not data.any()
 
-    def bind(self, *args: tuple, **kwargs: dict) -> "DataFrameValidator":
-        """Define validator with arguments."""
-        return DataFrameValidator(
-            name=self.name,
-            description=self.description,
-            validator=self.validator(*args, **kwargs),
-        )
+    # def bind(self, *args: tuple, **kwargs: dict) -> "DataFrameValidator":
+    #     """Define validator with arguments."""
+    #     return DataFrameValidator(
+    #         name=self.name,
+    #         description=string.Template(self.description).safe_substitute(kwargs),
+    #         validator=self.validator(*args, **kwargs),
+    #     )
 
 
 @dataclass
@@ -120,3 +132,11 @@ class SchemaValidator(Validator):
 
     def __is_valid__(self, schema: DataFrameT) -> DataFrameT:
         return schema.len() > 1
+
+    # def bind(self, *args: tuple, **kwargs: dict) -> "DataFrameValidator":
+    #     """Define validator with arguments."""
+    #     return DataFrameValidator(
+    #         name=self.name,
+    #         description=string.Template(self.description).safe_substitute(kwargs),
+    #         validator=self.validator(*args, **kwargs),
+    #     )
