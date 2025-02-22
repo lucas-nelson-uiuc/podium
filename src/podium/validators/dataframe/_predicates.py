@@ -29,7 +29,7 @@ def is_unique(columns: IntoExpr) -> Callable:
 
 
 def is_one_to_one(*keys: IntoExpr, value: IntoExpr) -> Callable:
-    """Check that all observations between key(s) and value are one-to-one."""
+    """Check that all observations between $keys and $value are one-to-one."""
 
     def _is_one_to_one(data: DataFrameT) -> IntoDataFrame:
         distinct_values = (
@@ -43,7 +43,7 @@ def is_one_to_one(*keys: IntoExpr, value: IntoExpr) -> Callable:
 
 
 def is_one_to_many(key: IntoExpr, *values: IntoExpr) -> Callable:
-    """Check that a key has a one-to-many relationship with value(s)."""
+    """Check that all observations between $key and $values are one-to-many."""
 
     def _is_one_to_many(data: DataFrameT) -> IntoDataFrame:
         distinct_values = (
@@ -62,7 +62,7 @@ def is_one_to_many(key: IntoExpr, *values: IntoExpr) -> Callable:
 
 
 def is_many_to_one(*keys: IntoExpr, value: IntoExpr) -> Callable:
-    """Check that a value has a many-to-one relationship with key(s)."""
+    """Check that all observations between $keys and $value are many-to-one."""
 
     def _is_many_to_one(data: DataFrameT) -> IntoDataFrame:
         distinct_values = (

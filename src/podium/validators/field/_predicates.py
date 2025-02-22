@@ -10,7 +10,7 @@ def is_between(
     upper_bound: Any | IntoExpr,
     closed: Literal["left", "right", "none", "both"] = "both",
 ) -> IntoExpr:
-    """Check that column contains values between $lower_bound and $upper_bound ($closed)."""
+    """Check that column contains values between $lower_bound and $upper_bound (bounded $closed)."""
 
     def _is_between(column: IntoExpr) -> IntoExpr:
         return _as_expr(column).is_between(lower_bound, upper_bound, closed)
@@ -29,7 +29,7 @@ def is_finite(column: IntoExpr) -> IntoExpr:
 
 
 def is_in(other: Any) -> Callable:
-    """Check that column contains `other` values."""
+    """Check that column contains $other values."""
 
     def _is_in(column: IntoExpr) -> IntoExpr:
         return _as_expr(column).is_in(other)
@@ -53,7 +53,7 @@ def is_unique(column: IntoExpr) -> IntoExpr:
 
 
 def ends_with(suffix: str) -> IntoExpr:
-    """Check that column ends with suffix."""
+    """Check that column ends with '$suffix'."""
 
     def _ends_with(column: IntoExpr) -> IntoExpr:
         return _as_expr(column).str.ends_with(suffix=suffix)
@@ -62,7 +62,7 @@ def ends_with(suffix: str) -> IntoExpr:
 
 
 def starts_with(prefix: str) -> IntoExpr:
-    """Check that column starts with prefix."""
+    """Check that column starts with '$prefix'."""
 
     def _starts_with(column: IntoExpr) -> IntoExpr:
         return _as_expr(column).str.starts_with(prefix=prefix)
@@ -71,7 +71,7 @@ def starts_with(prefix: str) -> IntoExpr:
 
 
 def matches_pattern(pattern: str, literal: bool = False) -> IntoExpr:
-    """Check that column contains pattern provided."""
+    """Check that column matches '$pattern'."""
 
     def _matches_pattern(column: IntoExpr) -> IntoExpr:
         return _as_expr(column).str.contains(pattern, literal=literal)
@@ -80,7 +80,7 @@ def matches_pattern(pattern: str, literal: bool = False) -> IntoExpr:
 
 
 def min_length(length: int) -> IntoExpr:
-    """Check that column does is no shorter than length."""
+    """Check that column does is no shorter than $length characters."""
 
     def _min_length(column: IntoExpr) -> IntoExpr:
         return _as_expr(column).str.len_chars() >= length
@@ -89,9 +89,9 @@ def min_length(length: int) -> IntoExpr:
 
 
 def max_length(length: int) -> IntoExpr:
-    """Check that column does is no longer than length."""
+    """Check that column does is no longer than $length characters."""
 
     def _max_length(column: IntoExpr) -> IntoExpr:
-        return _as_expr(column).str.len_chars() < -length
+        return _as_expr(column).str.len_chars() <= length
 
     return _max_length

@@ -33,6 +33,7 @@ class Validator:
         return self.description
 
     def bind(self, *args, **kwargs) -> "Validator":
+        """Update validator according to parameters."""
         return self.__class__(
             name=self.name,
             description=update_description(
