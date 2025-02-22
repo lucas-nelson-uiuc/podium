@@ -22,7 +22,7 @@ to_lowercase = FieldConverter(
     converter=_queries.to_lowercase,
 )
 
-to_upppercase = FieldConverter(
+to_uppercase = FieldConverter(
     name="Convert to Uppercase",
     converter=_queries.to_uppercase,
 )
