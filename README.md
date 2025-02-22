@@ -32,11 +32,14 @@ Podium removes the complexity of creating these fields:
 
 ```python
 # with Podium (narwhals)
-data.with_columns(
-    today = PodiumField(default=datetime.date.today()),
-    fruit = PodiumField(default="apple"),
-    units_sold = PodiumField(dtype=nw.Int64, converter=nw.col("fruit").count()),
-)
+from dataclasses import dataclass
+from podium import Model, Field
+
+
+class FruitMarket(Model):
+    today: datetime.date = PodiumField(default=datetime.date.today())
+    fruit: str = PodiumField(default="apple")
+    units_sold: int = PodiumField(converter=nw.col("fruit").count())
 ```
 
 To apply your schema against a data object, simply call:
