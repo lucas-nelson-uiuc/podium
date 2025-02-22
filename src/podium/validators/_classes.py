@@ -31,10 +31,19 @@ class Validator:
     def describe(self) -> str:
         return self.description
 
+    def _update_description(self, *args, **kwargs) -> str:
+        """Update description using provided parameters."""
+        from string import Template
+
+        template = Template(self.description)
+        identifiers = template.get_identifiers()
+        mapping = {i: v for i, v in zip(identifiers[: len(args)], args)} | kwargs
+        return template.safe_substitute(mapping)
+
     def bind(self, *args, **kwargs) -> "Validator":
         return self.__class__(
             name=self.name,
-            description=string.Template(self.description).safe_substitute(kwargs),
+            description=self._update_description(*args, **kwargs),
             validator=self.validator(*args, **kwargs),
         )
 

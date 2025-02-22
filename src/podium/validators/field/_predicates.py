@@ -10,7 +10,7 @@ def is_between(
     upper_bound: Any | IntoExpr,
     closed: Literal["left", "right", "none", "both"] = "both",
 ) -> IntoExpr:
-    """Check that column contains values between {lower_bound} and {upper_bound} ({closed})."""
+    """Check that column contains values between $lower_bound and $upper_bound ($closed)."""
 
     def _is_between(column: IntoExpr) -> IntoExpr:
         return _as_expr(column).is_between(lower_bound, upper_bound, closed)
