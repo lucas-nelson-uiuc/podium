@@ -3,7 +3,7 @@ from podium.converters.field.field import (
     replace_all,
     to_datetime,
     to_lowercase,
-    to_upppercase,
+    to_uppercase,
 )
 
-__all__ = ["replace", "replace_all", "to_datetime", "to_lowercase", "to_upppercase"]
+__all__ = ["replace", "replace_all", "to_datetime", "to_lowercase", "to_uppercase"]
