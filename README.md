@@ -15,17 +15,21 @@ from pyspark.sql import functions as F, types as T
 
 # with polars
 data.with_columns(
-    today=pl.lit(datetime.date.today()),
-    fruit=pl.when(pl.col('fruit').is_null()).then('apple').otherwise('banana'),
-    units_sold=pl.col('fruit').count().cast(pl.Int64),
+    minimal_field=pl.lit("Minimal Value"),
+    another_minimal_field=pl.when(pl.col("amf").is_null()).then('Another Minimal Value').otherwise(pl.col("amf")),
+    complex_field=pl.col("not_so_minimal_field").str.to_lowercase(),
 )
+assert data.filter(~pl.col("complex_field").str.matches(r"^[a-z]{8}$")).is_empty()
+assert data.filter(~pl.col("complex_field").unique()).is_empty()
 
 # with pyspark
 data.withColumns({
-    "today": F.lit(datetime.date.today()),
-    "fruit": F.when(F.col("fruit").isNull(), F.lit("apple")).otherwise(F.lit("banana")),
-    "units_sold": F.col("fruit").count().cast(T.IntegerType())
+    "minimal_field": F.lit("Minimal Value"),
+    "another_minimal_field": F.when(F.col("amf").isNull(), F.lit("Another Minimal Value")).otherwise(F.col("amf")),
+    "complex_field": F.lower(F.col("not_so_minimal_field"))
 })
+assert data.filter(~F.col("complex_field").rlike(r"^[a-z]{8}$")).isEmpty()
+assert data.groupby("complex_field").count().filter(F.col("count") > 1).isEmpty()
 ```
 
 Podium removes the complexity of creating these fields:
@@ -33,13 +37,23 @@ Podium removes the complexity of creating these fields:
 ```python
 # with Podium (narwhals)
 from dataclasses import dataclass
-from podium import Model, Field
+from podium import Model, Field, converter, validator
 
 
-class FruitMarket(Model):
-    today: datetime.date = PodiumField(default=datetime.date.today())
-    fruit: str = PodiumField(default="apple")
-    units_sold: int = PodiumField(converter=nw.col("fruit").count())
+@dataclass
+class TemplateModel(Model):
+    # some fields require minimal expectations
+    minimal_field: str = Field(default="Minimal Value")
+    amf: str = Field(alias="another_minimal_field", default="Another Minimal Value")
+    # other fields require more-than-minimal expectations
+    not_so_minimal_field: str = Field(
+        alias="complex_field",
+        converter=converter.field.to_lowercase,
+        validator=(
+            validator.field.matches_pattern.bind(pattern=r"^[a-z]{8}$"),
+            validator.field.unique_values,
+        ),
+    )
 ```
 
 To apply your schema against a data object, simply call:
