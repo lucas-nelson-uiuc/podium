@@ -2,12 +2,13 @@ from typing import Callable, Optional
 
 from dataclasses import dataclass, field
 
-import string
 import functools
 import operator
 
 import narwhals as nw
 from narwhals.typing import DataFrameT, IntoExpr, IntoDataFrame
+
+from podium.describe import get_default_args, update_description
 
 
 @dataclass(kw_only=True)
@@ -22,28 +23,24 @@ class Validator:
         if self.description is None:
             self.description = self.validator.__doc__ or "Missing description"
 
-    def __validate__(self, data: DataFrameT) -> IntoDataFrame:
+    def __podium_validate__(self, data: DataFrameT) -> IntoDataFrame:
         raise NotImplementedError("Method not yet implemented.")
 
-    def __is_valid__(self, data: DataFrameT) -> bool:
+    def __podium_is_valid__(self, data: DataFrameT) -> bool:
         raise NotImplementedError("Method not yet implemented.")
 
     def describe(self) -> str:
         return self.description
 
-    def _update_description(self, *args, **kwargs) -> str:
-        """Update description using provided parameters."""
-        from string import Template
-
-        template = Template(self.description)
-        identifiers = template.get_identifiers()
-        mapping = {i: v for i, v in zip(identifiers[: len(args)], args)} | kwargs
-        return template.safe_substitute(mapping)
-
     def bind(self, *args, **kwargs) -> "Validator":
         return self.__class__(
             name=self.name,
-            description=self._update_description(*args, **kwargs),
+            description=update_description(
+                self.description,
+                *args,
+                defaults=get_default_args(self.validator),
+                **kwargs,
+            ),
             validator=self.validator(*args, **kwargs),
         )
 
@@ -67,10 +64,10 @@ class Validator:
 class FieldValidator(Validator):
     """Base class for field validator."""
 
-    def __validate__(self, data: DataFrameT) -> None:
+    def __podium_validate__(self, data: DataFrameT) -> None:
         return nw.from_native(data).filter(self.validator)
 
-    def __is_valid__(self, data: DataFrameT) -> bool:
+    def __podium_is_valid__(self, data: DataFrameT) -> bool:
         return data.is_empty()
 
     def _construct_validator(
@@ -80,14 +77,6 @@ class FieldValidator(Validator):
         compare_op = operator.and_ if strict else operator.or_
         query = functools.reduce(compare_op, map(self.validator, column))
         return operator.inv(query) if invert else query
-
-    # def bind(self, *args: tuple, **kwargs: dict) -> "FieldValidator":
-    #     """Define validator with arguments."""
-    #     return FieldValidator(
-    #         name=self.name,
-    #         description=string.Template(self.description).safe_substitute(kwargs),
-    #         validator=self.validator(*args, **kwargs),
-    #     )
 
     def construct(
         self,
@@ -110,41 +99,25 @@ class FieldValidator(Validator):
 class DataFrameValidator(Validator):
     """Base class for DataFrame validator."""
 
-    def __validate__(self, data: DataFrameT) -> DataFrameT:
+    def __podium_validate__(self, data: nw.DataFrame) -> nw.DataFrame:
         return self.validator(nw.from_native(data))
 
-    def __is_valid__(self, data: DataFrameT) -> bool:
+    def __podium_is_valid__(self, data: nw.DataFrame) -> bool:
         return not data.any()
-
-    # def bind(self, *args: tuple, **kwargs: dict) -> "DataFrameValidator":
-    #     """Define validator with arguments."""
-    #     return DataFrameValidator(
-    #         name=self.name,
-    #         description=string.Template(self.description).safe_substitute(kwargs),
-    #         validator=self.validator(*args, **kwargs),
-    #     )
 
 
 @dataclass
 class RelationshipValidator(DataFrameValidator):
     """Base class for DataFrame Relationship validator."""
 
-    def __is_valid__(self, data: DataFrameT) -> bool:
+    def __podium_is_valid__(self, data: nw.DataFrame) -> bool:
         return data.is_empty()
 
 
 @dataclass
 class SchemaValidator(Validator):
-    def __validate__(self, schema: DataFrameT) -> DataFrameT:
+    def __podium_validate__(self, schema: nw.Schema):
         return self.validator(schema)
 
-    def __is_valid__(self, schema: DataFrameT) -> DataFrameT:
+    def __podium_is_valid__(self, schema: nw.Schema) -> bool:
         return schema.len() > 1
-
-    # def bind(self, *args: tuple, **kwargs: dict) -> "DataFrameValidator":
-    #     """Define validator with arguments."""
-    #     return DataFrameValidator(
-    #         name=self.name,
-    #         description=string.Template(self.description).safe_substitute(kwargs),
-    #         validator=self.validator(*args, **kwargs),
-    #     )
