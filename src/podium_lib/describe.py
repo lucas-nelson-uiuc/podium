@@ -20,23 +20,25 @@ def get_identifiers(template: string.Template) -> Iterable[str]:
 
     NOTE: can be removed once python < 3.10 is no longer supported
     """
-    import re
 
-    pattern = f"{template.delimiter}({template.idpattern})"
-    return set(
-        m.group(1)
-        for m in re.finditer(pattern, template.template, flags=template.flags)
-    )
+    def _get_identifiers(template: string.Template):
+        import re
+
+        pattern = f"{template.delimiter}({template.idpattern})"
+        return set(
+            m.group(1)
+            for m in re.finditer(pattern, template.template, flags=template.flags)
+        )
+
+    if sys.version_info >= (3, 11):
+        return string.Template.get_identifiers(template)
+    else:
+        return _get_identifiers(template)
 
 
 def update_description(description: str, *args, defaults: dict = None, **kwargs) -> str:
     """Update description using provided parameters."""
     template = string.Template(description)
-    if sys.version_info >= (3, 11):
-        get_identifiers = string.Template.get_identifiers
-    else:
-        get_identifiers = get_identifiers
-
     mapping = dict()
 
     if defaults is not None:
