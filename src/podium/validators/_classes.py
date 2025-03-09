@@ -11,17 +11,14 @@ from narwhals.typing import DataFrameT, IntoExpr, IntoDataFrame
 from podium.describe import get_default_args, update_description
 
 
-@dataclass(kw_only=True)
 class Validator:
     """Base class for validator constructor."""
 
-    name: str
-    description: str = field(default=None)
-    validator: Callable
-
-    def __post_init__(self):
-        if self.description is None:
-            self.description = self.validator.__doc__ or "Missing description"
+    def __init__(self, name: str, validator: Callable = None, description: str = None):
+        self.name = name
+        self.validator = validator
+        if description is None:
+            self.description = validator.__doc__ or "Missing description"
 
     def __podium_validate__(self, data: DataFrameT) -> IntoDataFrame:
         raise NotImplementedError("Method not yet implemented.")
@@ -61,7 +58,6 @@ class Validator:
             print(f"{self.name} | {log_level}: {log_msg}")
 
 
-@dataclass
 class FieldValidator(Validator):
     """Base class for field validator."""
 
@@ -96,7 +92,6 @@ class FieldValidator(Validator):
         )
 
 
-@dataclass
 class DataFrameValidator(Validator):
     """Base class for DataFrame validator."""
 
@@ -107,7 +102,6 @@ class DataFrameValidator(Validator):
         return not data.any()
 
 
-@dataclass
 class RelationshipValidator(DataFrameValidator):
     """Base class for DataFrame Relationship validator."""
 
@@ -115,7 +109,6 @@ class RelationshipValidator(DataFrameValidator):
         return data.is_empty()
 
 
-@dataclass
 class SchemaValidator(Validator):
     def __podium_validate__(self, schema: nw.Schema):
         return self.validator(schema)
