@@ -1,5 +1,7 @@
+import sys
 import inspect
 import string
+from typing import Iterable
 
 
 def get_default_args(func):
@@ -12,10 +14,28 @@ def get_default_args(func):
     }
 
 
+def get_identifiers(template: string.Template) -> Iterable[str]:
+    """
+    Extract identifiers from template.
+
+    NOTE: can be removed once python < 3.10 is no longer supported
+    """
+    import re
+
+    pattern = f"{template.delimiter}({template.idpattern})"
+    return set(
+        m.group(1)
+        for m in re.finditer(pattern, template.template, flags=template.flags)
+    )
+
+
 def update_description(description: str, *args, defaults: dict = None, **kwargs) -> str:
     """Update description using provided parameters."""
     template = string.Template(description)
-    identifiers = template.get_identifiers()
+    if sys.version_info >= (3, 11):
+        identifiers = template.get_identifiers()
+    else:
+        identifiers = get_identifiers(template)
     mapping = dict()
     if defaults is not None:
         mapping |= defaults
