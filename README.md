@@ -6,21 +6,22 @@ Class-based data-expression framework.
 
 ```bash
 # with Astral uv
-uv pip install podium
+uv pip install podium-lib
 
 # with pip
-pip install podium
+pip install podium-lib
 
 # get latest version
-git clone https://github.com/lucas-nelson-uiuc/podium.git
+git clone https://github.com/lucas-nelson-uiuc/podium-lib.git
 ```
 
 ## Getting Started
 
 ```python
-from podium import Model, Field
+import podium_lib
+from podium_lib import Model, Field
 
-housing_data = podium.load("california_housing") # TODO: support this method
+housing_data = podium_lib.load("california_housing") # TODO: support this method
 
 
 # create your first class
@@ -32,7 +33,7 @@ print(CaliforniaHousing.schema())
 
 
 # add converters and validators to your fields
-from podium import validators as pv, converters as pc
+from podium_lib import validators as pv, converters as pc
 
 class CaliforniaHousing(Model):
     latitude: float = Field(
