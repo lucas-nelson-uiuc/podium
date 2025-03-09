@@ -97,9 +97,19 @@ class Model:
         }
 
     @classmethod
+    def __preprocess__(cls, data: nw.DataFrame) -> nw.DataFrame:
+        """Perform optional processing function to run before conversions."""
+        return data
+
+    @classmethod
+    def __postprocess__(cls, data: nw.DataFrame) -> nw.DataFrame:
+        """Perform optional processing function to run after conversions."""
+        return data
+
+    @classmethod
     def convert(cls, data: nw.DataFrame) -> nw.DataFrame:
         """Apply field-level conversions to data."""
-        conversions = {name: field.convert() for name, field in cls.workflow()}
+        conversions = {name: field.convert() for name, field in cls.workflow().items()}
         return (
             data.pipe(cls.__preprocess__)
             .with_columns(**conversions)
@@ -123,13 +133,3 @@ class Model:
                 finally:
                     # TODO: replace with logging module
                     print(f"{level.upper()} | {msg}")
-
-    @classmethod
-    def __preprocess__(cls, data: nw.DataFrame) -> nw.DataFrame:
-        """Perform optional processing function to run before conversions."""
-        return data
-
-    @classmethod
-    def __postprocess__(cls, data: nw.DataFrame) -> nw.DataFrame:
-        """Perform optional processing function to run after conversions."""
-        return data

@@ -54,6 +54,7 @@ CaliforniaHousing.validate(housing_data)
 Podium has a few simple - yet powerful - goals in mind:
 - Reduce the need to know how to interact with data objects (e.g. DataFrame APIs)
 - Simplify the ability to express expectations of your data objects
+- Document workflows as human-readable artifacts
 
 ## Inspiration
 

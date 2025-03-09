@@ -33,7 +33,6 @@ class Field:
         factory: Callable[[Any], Any] = None,
         converter: Callable[[Any], Any] = None,
         validator: Callable[[Any], Any] = None,
-        # metadata: dict[str, Any] = None,
     ):
         if (default is not None) and (factory is not None):
             raise ValueError("Cannot pass default and factory.")
@@ -45,11 +44,10 @@ class Field:
         self.default = default or factory
         self.converter = converter
         self.validator = validator
-        # self.metadata = metadata
 
     def __repr__(self) -> str:
         """Represent attributes of Podium Field."""
-        return f"PodiumField(name={self.name}, dtype={self.dtype})"
+        return f"Field(name={str(self.name)}, dtype={str(self.dtype)})"
 
     def _cast_dtype(self, column: IntoExpr) -> IntoExpr:
         """Cast column to target data type."""
