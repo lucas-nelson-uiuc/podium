@@ -1,6 +1,6 @@
 # Podium
 
-Class-based workflow constructor.
+Class-based data-expression framework.
 
 ## Example
 
