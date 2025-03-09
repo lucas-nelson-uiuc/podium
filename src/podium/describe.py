@@ -33,14 +33,20 @@ def update_description(description: str, *args, defaults: dict = None, **kwargs)
     """Update description using provided parameters."""
     template = string.Template(description)
     if sys.version_info >= (3, 11):
-        identifiers = template.get_identifiers()
+        get_identifiers = template.get_identifiers
     else:
-        identifiers = get_identifiers(template)
+        get_identifiers = get_identifiers
+
     mapping = dict()
+
     if defaults is not None:
         mapping |= defaults
+
     if args:
+        identifiers = get_identifiers(template)
         mapping |= {i: v for i, v in zip(identifiers[: len(args)], args)}
+
     if kwargs:
         mapping |= kwargs
+
     return template.safe_substitute(mapping)
