@@ -33,7 +33,7 @@ def update_description(description: str, *args, defaults: dict = None, **kwargs)
     """Update description using provided parameters."""
     template = string.Template(description)
     if sys.version_info >= (3, 11):
-        get_identifiers = template.get_identifiers
+        get_identifiers = string.Template.get_identifiers
     else:
         get_identifiers = get_identifiers
 
