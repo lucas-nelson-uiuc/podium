@@ -36,7 +36,6 @@ Podium removes the complexity of creating these fields:
 
 ```python
 # with Podium (narwhals)
-from dataclasses import dataclass
 from podium import Model, Field, converter, validator
 
 
