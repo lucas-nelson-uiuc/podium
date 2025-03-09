@@ -6,17 +6,21 @@ import narwhals as nw
 from podium.describe import get_default_args, update_description
 
 
-@dataclass(kw_only=True)
 class Converter:
     """Base converter class."""
 
-    name: str
-    description: str = field(default=None)
-    converter: Callable
-
-    def __post_init__(self):
-        if self.description is None:
-            self.description = self.converter.__doc__ or "Missing description"
+    def __init__(
+        self,
+        name: str,
+        converter: Callable,
+        description: str = None,
+    ):
+        self.name = name
+        self.converter = converter
+        if description is None:
+            self.description = converter.__doc__ or "Missing description"
+        else:
+            self.description = description
 
     def __podium_convert__(self):
         raise NotImplementedError("Method not yet implemented.")
@@ -37,13 +41,11 @@ class Converter:
         return self.__podium_convert__(data)
 
 
-@dataclass
 class FieldConverter(Converter):
     def __podium_convert__(self, column: nw.Expr) -> nw.Expr:
         return self.converter(column)
 
 
-@dataclass
 class DataFrameConverter(Converter):
     def __podium_convert__(self, data: nw.DataFrame) -> nw.DataFrame:
         return self.converter(data)
