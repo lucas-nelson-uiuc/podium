@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 import narwhals as nw
 
-from podium.describe import get_default_args, update_description
+from podium_lib.describe import get_default_args, update_description
 
 
 class Converter:

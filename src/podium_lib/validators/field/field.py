@@ -1,5 +1,5 @@
-from podium.validators._classes import FieldValidator
-from podium.validators.field import _predicates
+from podium_lib.validators._classes import FieldValidator
+from podium_lib.validators.field import _predicates
 
 
 between_values = FieldValidator(

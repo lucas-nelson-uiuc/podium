@@ -2,7 +2,7 @@ from typing import Optional
 
 import narwhals as nw
 
-from podium.model.field import Field
+from podium_lib.model.field import Field
 
 
 # @dataclass

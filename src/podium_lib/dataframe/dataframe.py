@@ -1,6 +1,6 @@
 import narwhals as nw
 
-from podium.dataframe.config import PodiumConfig
+from podium_lib.dataframe.config import PodiumConfig
 
 
 class PodiumDataFrame(nw.DataFrame):

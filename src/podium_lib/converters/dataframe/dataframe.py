@@ -1,5 +1,5 @@
-from podium.converters._classes import DataFrameConverter
-from podium.converters.dataframe import _queries
+from podium_lib.converters._classes import DataFrameConverter
+from podium_lib.converters.dataframe import _queries
 
 
 drop_nulls = DataFrameConverter(name="Drop Nulls", converter=_queries.drop_nulls)

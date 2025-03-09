@@ -4,7 +4,7 @@ import functools
 import narwhals as nw
 from narwhals.typing import IntoExpr
 
-from podium.converters import FieldConverter
+from podium_lib.converters import FieldConverter
 
 
 def apply_converter(

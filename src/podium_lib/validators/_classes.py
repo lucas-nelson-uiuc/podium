@@ -8,7 +8,7 @@ import operator
 import narwhals as nw
 from narwhals.typing import DataFrameT, IntoExpr, IntoDataFrame
 
-from podium.describe import get_default_args, update_description
+from podium_lib.describe import get_default_args, update_description
 
 
 class Validator:

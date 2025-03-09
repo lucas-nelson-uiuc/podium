@@ -1,5 +1,5 @@
-from podium.validators._classes import DataFrameValidator, RelationshipValidator
-from podium.validators.dataframe import _predicates
+from podium_lib.validators._classes import DataFrameValidator, RelationshipValidator
+from podium_lib.validators.dataframe import _predicates
 
 
 duplicate_rows = DataFrameValidator(

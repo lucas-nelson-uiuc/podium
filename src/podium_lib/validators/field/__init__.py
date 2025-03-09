@@ -1,4 +1,4 @@
-from podium.validators.field.field import (
+from podium_lib.validators.field.field import (
     between_values,
     duplicate_values,
     finite_values,

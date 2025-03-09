@@ -1,6 +1,6 @@
 from narwhals.typing import IntoExpr
 
-from podium.utils import _as_expr
+from podium_lib.utils import _as_expr
 
 
 def len_chars(column: IntoExpr) -> IntoExpr:

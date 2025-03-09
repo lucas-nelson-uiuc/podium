@@ -1,5 +1,5 @@
 import string
-from podium import describe
+from podium_lib import describe
 
 import pytest
 
