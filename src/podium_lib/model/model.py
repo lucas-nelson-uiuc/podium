@@ -121,6 +121,7 @@ class Model:
     @classmethod
     def validate(cls, data: nw.DataFrame) -> nw.DataFrame:
         """Run all provided validations against a DataFrame."""
+        data = nw.from_native(data)
         for name, field in cls.workflow():
             if field.validator:
                 try:
