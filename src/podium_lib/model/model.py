@@ -126,12 +126,5 @@ class Model:
             if field.validator:
                 try:
                     field.validator.construct(field.alias).validate(data)
-                    level = "success"
-                    msg = "All observations passed"
-                    print(f"{level.upper()} | {msg}")
-                except AssertionError as e:
-                    level = getattr(field.validator, "level", "error")
-                    msg = "At least one observation failed"
-                    print(f"{level.upper()} | {msg}")
                 except Exception as e:
                     raise e

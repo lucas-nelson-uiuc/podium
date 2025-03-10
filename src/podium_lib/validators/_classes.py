@@ -31,6 +31,7 @@ class Validator:
 
     def bind(self, *args, **kwargs) -> "Validator":
         """Update validator according to parameters."""
+        # TODO: check that self.validator is bind-able (returns expression)
         return self.__class__(
             name=self.name,
             description=update_description(
@@ -43,7 +44,14 @@ class Validator:
         )
 
     def validate(self, data: DataFrameT) -> None:
-        invalid_obs = self.__podium_validate__(data)
+        """Apply validator to DataFrame."""
+        try:
+            invalid_obs = self.__podium_validate__(data)
+        except TypeError as e:
+            raise TypeError(
+                f"Unable to apply validator. Did you forget to bind your validator?"
+            )
+
         try:
             assert self.__podium_is_valid__(invalid_obs)
             log_level = "success"
