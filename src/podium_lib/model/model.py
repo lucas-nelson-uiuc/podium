@@ -122,10 +122,10 @@ class Model:
     def validate(cls, data: nw.DataFrame) -> nw.DataFrame:
         """Run all provided validations against a DataFrame."""
         data = nw.from_native(data)
-        for name, field in cls.workflow().items():
+        for field in cls.workflow().values():
             if field.validator:
                 try:
-                    field.validator.validate(data)
+                    field.validator.construct(field.alias).validate(data)
                     level = "success"
                     msg = "All observations passed"
                     print(f"{level.upper()} | {msg}")
