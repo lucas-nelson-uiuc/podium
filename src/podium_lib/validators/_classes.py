@@ -49,7 +49,7 @@ class Validator:
             invalid_obs = self.__podium_validate__(data)
         except TypeError as e:
             raise TypeError(
-                f"Unable to apply validator. Did you forget to bind your validator?"
+                f"Unable to apply `{self.name}` validator. Did you forget to bind your validator?"
             )
 
         try:
@@ -59,7 +59,6 @@ class Validator:
         except AssertionError:
             log_level = "failure"
             log_msg = "At least one column failed the validation."
-            print(invalid_obs)
         except Exception as e:
             raise e
         finally:

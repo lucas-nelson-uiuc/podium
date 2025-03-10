@@ -43,7 +43,7 @@ class Converter:
             data = self.__podium_convert__(data)
         except TypeError as e:
             raise TypeError(
-                f"Unable to apply converter. Did you forget to bind your converter?"
+                f"Unable to apply `{self.name}` converter. Did you forget to bind your converter?"
             )
         return data
 

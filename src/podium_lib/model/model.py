@@ -125,6 +125,7 @@ class Model:
         for field in cls.workflow().values():
             if field.validator:
                 try:
-                    field.validator.construct(field.alias).validate(data)
+                    validator = field.validator.construct(field.alias)
+                    validator.validate(data)
                 except Exception as e:
                     raise e
