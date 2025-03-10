@@ -17,6 +17,8 @@ class Validator:
         self.validator = validator
         if description is None:
             self.description = validator.__doc__ or "Missing description"
+        else:
+            self.description = description
 
     def __podium_validate__(self, data: DataFrameT) -> IntoDataFrame:
         raise NotImplementedError("Method not yet implemented.")
@@ -60,7 +62,7 @@ class FieldValidator(Validator):
     """Base class for field validator."""
 
     def __podium_validate__(self, data: DataFrameT) -> None:
-        return nw.from_native(data).filter(self.validator)
+        return data.filter(self.validator)
 
     def __podium_is_valid__(self, data: DataFrameT) -> bool:
         return data.is_empty()
