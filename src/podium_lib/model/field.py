@@ -54,6 +54,10 @@ class Field:
         assert issubclass(self.dtype, nw.dtypes.DType)
         return column.cast(self.dtype)
 
+    def to_dict(self) -> dict:
+        """Return attributes as dictionary."""
+        return self.__dict__
+
     def document(self, attributes: Sequence[str] = None) -> dict:
         """Return JSON-like object describing Field."""
         if attributes is None:

@@ -111,9 +111,11 @@ class Model:
         """Apply field-level conversions to data."""
         conversions = [field.convert() for field in cls.workflow().values()]
         return (
-            data.pipe(cls.__preprocess__)
+            nw.from_native(data)
+            .pipe(cls.__preprocess__)
             .with_columns(*conversions)
             .pipe(cls.__postprocess__)
+            .to_native()
         )
 
     @classmethod
