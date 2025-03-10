@@ -38,7 +38,14 @@ class Converter:
         )
 
     def convert(self, data: nw.DataFrame) -> nw.DataFrame:
-        return self.__podium_convert__(data)
+        """Apply converter to DataFrame."""
+        try:
+            data = self.__podium_convert__(data)
+        except TypeError as e:
+            raise TypeError(
+                f"Unable to apply converter. Did you forget to bind your converter?"
+            )
+        return data
 
 
 class FieldConverter(Converter):
