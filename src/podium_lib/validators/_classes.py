@@ -62,7 +62,7 @@ class FieldValidator(Validator):
     """Base class for field validator."""
 
     def __podium_validate__(self, data: DataFrameT) -> None:
-        return data.filter(self.validator)
+        return data.filter(~self.validator)
 
     def __podium_is_valid__(self, data: DataFrameT) -> bool:
         return data.is_empty()
