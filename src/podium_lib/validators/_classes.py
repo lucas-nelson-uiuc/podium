@@ -1,7 +1,5 @@
 from typing import Callable, Optional
 
-from dataclasses import dataclass, field
-
 import functools
 import operator
 
@@ -43,9 +41,9 @@ class Validator:
         )
 
     def validate(self, data: DataFrameT) -> None:
-        invalid_obs = self.__validate__(data)
+        invalid_obs = self.__podium_validate__(data)
         try:
-            assert self.__is_valid__(invalid_obs)
+            assert self.__podium_is_valid__(invalid_obs)
             log_level = "success"
             log_msg = "All column(s) passed the validation."
         except AssertionError:
