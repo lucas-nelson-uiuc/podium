@@ -109,10 +109,10 @@ class Model:
     @classmethod
     def convert(cls, data: nw.DataFrame) -> nw.DataFrame:
         """Apply field-level conversions to data."""
-        conversions = {name: field.convert() for name, field in cls.workflow().items()}
+        conversions = [field.convert() for field in cls.workflow().values()]
         return (
             data.pipe(cls.__preprocess__)
-            .with_columns(**conversions)
+            .with_columns(*conversions)
             .pipe(cls.__postprocess__)
         )
 
