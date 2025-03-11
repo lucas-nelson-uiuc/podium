@@ -1,11 +1,11 @@
 import narwhals as nw
 
-from podium_lib.dataframe.config import PodiumConfig
+from podium_lib.dataframe.context import PodiumConfig
 
 
-class PodiumDataFrame(nw.DataFrame):
+class DataFrame(nw.DataFrame):
     """Base class for podium-supported DataFrame."""
 
-    def __podium_config__(config: PodiumConfig) -> "PodiumDataFrame":
+    def __podium_config__(config: PodiumConfig) -> "DataFrame":
         """Configure dataframe."""
         pass
