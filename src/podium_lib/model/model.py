@@ -20,18 +20,18 @@ class Model:
     def workflow(cls) -> dict:
         """Return planned query of operations."""
 
-        def assign_value(alias: str, dtype: type, field: Optional[dict]):
+        def assign_value(name: str, dtype: type, field: Optional[dict]):
             """Handle field creation based on class definition."""
             if field is None:
                 field = dict()
             if isinstance(field, Field):
                 field = field.to_dict()
 
-            field = {"alias": alias, "dtype": dtype} | field
+            field = {"name": name, "dtype": dtype} | field
             return Field(**field)
 
         return {
-            field: assign_value(alias=field, dtype=dtype, field=cls.__dict__.get(field))
+            field: assign_value(name=field, dtype=dtype, field=cls.__dict__.get(field))
             for field, dtype in cls.schema().items()
         }
 
