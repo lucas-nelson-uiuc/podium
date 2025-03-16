@@ -59,6 +59,11 @@ Podium has a few simple - yet powerful - goals in mind:
 ## Inspiration
 
 The name of this package came about in the following manner:
-- This package implements `narwhals` - a group of narwhals is considered a **pod**
+- This package implements `narwhals` - a group of narwhals is called a **pod**
 - This package is an opinionated workflow orchestrator, so a podium seems a
 fitting environment to share these opinions
+
+## Next Steps
+
+- Add `dataframe` module - allow configurations to control logging and other methods
+- Add `logging` module - allow proper handling/output of procedures
