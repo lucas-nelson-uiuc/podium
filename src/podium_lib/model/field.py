@@ -1,4 +1,5 @@
 from typing import Any, Callable, Optional, Sequence
+from typing_extensions import Self
 import functools
 
 import narwhals as nw
@@ -44,6 +45,16 @@ class Field:
         self.default = default or factory
         self.converter = converter
         self.validator = validator
+
+    def __eq__(self: Self, other: object) -> bool:
+        """Check that two field objects are equal to one another."""
+        import inspect
+
+        parameters = inspect.signature(Field).parameters.keys()
+        return all(
+            getattr(self, param, None) == getattr(other, param, None)
+            for param in parameters
+        )
 
     def __repr__(self) -> str:
         """Represent attributes of Podium Field."""

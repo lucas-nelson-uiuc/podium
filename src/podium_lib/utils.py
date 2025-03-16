@@ -1,9 +1,9 @@
 import narwhals as nw
-from narwhals.typing import IntoExpr, IntoExprT
+from narwhals.typing import IntoExpr
 
 
-def _as_expr(column: str | IntoExprT) -> IntoExpr:
+def _as_expr(column: IntoExpr) -> IntoExpr:
     """Coerce column-like object to expression."""
-    if not isinstance(column, IntoExprT):
+    if not isinstance(column, nw.Expr):
         column = nw.col(column)
     return column
