@@ -2,69 +2,59 @@
 
 Class-based data-expression framework.
 
-## Example
+## Installation
 
-*In theory*, Podium aims to reduce the need to know a DataFrame's API to express
-your expectations of a data object.
+```bash
+# with Astral uv
+uv pip install podium-lib
 
-Say you need to create a column that assigns a default value.
+# with pip
+pip install podium-lib
 
-```python
-import polars as pl
-from pyspark.sql import functions as F, types as T
-
-# with polars
-data.with_columns(
-    minimal_field=pl.lit("Minimal Value"),
-    another_minimal_field=pl.when(pl.col("amf").is_null()).then('Another Minimal Value').otherwise(pl.col("amf")),
-    complex_field=pl.col("not_so_minimal_field").str.to_lowercase(),
-)
-assert data.filter(~pl.col("complex_field").str.matches(r"^[a-z]{8}$")).is_empty()
-assert data.filter(~pl.col("complex_field").unique()).is_empty()
-
-# with pyspark
-data.withColumns({
-    "minimal_field": F.lit("Minimal Value"),
-    "another_minimal_field": F.when(F.col("amf").isNull(), F.lit("Another Minimal Value")).otherwise(F.col("amf")),
-    "complex_field": F.lower(F.col("not_so_minimal_field"))
-})
-assert data.filter(~F.col("complex_field").rlike(r"^[a-z]{8}$")).isEmpty()
-assert data.groupby("complex_field").count().filter(F.col("count") > 1).isEmpty()
+# get latest version
+git clone https://github.com/lucas-nelson-uiuc/podium-lib.git
 ```
 
-Podium removes the complexity of creating these fields:
+## Getting Started
 
 ```python
-# with Podium (narwhals)
-from dataclasses import dataclass
-from podium import Model, Field, converter, validator
+import podium_lib
+from podium_lib import Model, Field
+
+housing_data = podium_lib.load("california_housing") # TODO: support this method
 
 
-@dataclass
-class TemplateModel(Model):
-    # some fields require minimal expectations
-    minimal_field: str = Field(default="Minimal Value")
-    amf: str = Field(alias="another_minimal_field", default="Another Minimal Value")
-    # other fields require more-than-minimal expectations
-    not_so_minimal_field: str = Field(
-        alias="complex_field",
-        converter=converter.field.to_lowercase,
-        validator=(
-            validator.field.matches_pattern.bind(pattern=r"^[a-z]{8}$"),
-            validator.field.unique_values,
-        ),
+# create your first class
+class CaliforniaHousing(Model):
+    latitude: float
+    longitude: float
+
+print(CaliforniaHousing.schema())
+
+
+# add converters and validators to your fields
+from podium_lib import validators as pv, converters as pc
+
+class CaliforniaHousing(Model):
+    latitude: float = Field(
+        converter=pc.field.round(0),
+        validator=pv.field.between(32, 42)
     )
+    longitude: float = Field(
+        converter=pc.field.round(0),
+        validator=pv.field.between(114, 124)
+    )
+
+print(CaliforniaHousing.workflow())
+CaliforniaHousing.validate(housing_data)
 ```
 
-To apply your schema against a data object, simply call:
+## Why Podium?
 
-```python
-# convert all fields in data according to model
-Sample.convert(data)
-
-# validate all fields in data according to model
-Sample.validate(data)
-```
+Podium has a few simple - yet powerful - goals in mind:
+- Reduce the need to know how to interact with data objects (e.g. DataFrame APIs)
+- Simplify the ability to express expectations of your data objects
+- Document workflows as human-readable artifacts
 
 ## Inspiration
 
